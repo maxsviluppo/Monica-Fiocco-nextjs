@@ -173,7 +173,7 @@ export default function StrumentoPage() {
     <div className="bg-white min-h-screen pb-20">
       
       {/* 1. HERO SECTION */}
-      <section className="relative w-full h-[60vh] min-h-[400px] overflow-hidden bg-glicine-950">
+      <section className="relative w-full h-[60vh] min-h-[480px] sm:min-h-[400px] overflow-hidden bg-glicine-950">
         <div className="absolute inset-0">
           <img
             src={tool.heroImage}
@@ -208,8 +208,8 @@ export default function StrumentoPage() {
           </div>
         )}
 
-        <div className="absolute inset-0 z-10 flex items-end">
-          <div className="max-w-5xl mx-auto px-6 w-full pb-16">
+        <div className="absolute inset-0 z-10 flex items-end pt-32 sm:pt-0">
+          <div className="max-w-5xl mx-auto px-6 w-full pb-10 sm:pb-16">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}

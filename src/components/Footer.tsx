@@ -2,12 +2,12 @@
 
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, Heart } from "lucide-react";
+import { Mail, Phone, Send } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="bg-glicine-950 text-glicine-200/80 pt-20 pb-10 px-6 font-sans">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         {/* Brand Col */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
@@ -29,7 +29,7 @@ export default function Footer() {
           <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6 text-white">Menu</h4>
           <ul className="space-y-3 text-sm">
             <li><Link href="/#home" className="hover:text-white transition-colors">Home Page</Link></li>
-            <li><Link href="/#chi-sono" className="hover:text-white transition-colors">Chi Sono</Link></li>
+            <li><Link href="/chi-sono" className="hover:text-white transition-colors">Chi Sono</Link></li>
             <li><Link href="/#strumenti" className="hover:text-white transition-colors">I Miei Strumenti</Link></li>
             <ul className="pl-4 space-y-2 text-xs border-l border-white/10 mt-2 mb-4">
               <li><Link href="/strumenti/counseling" className="hover:text-white transition-colors">Counseling Umanistico</Link></li>
@@ -38,6 +38,12 @@ export default function Footer() {
               <li><Link href="/strumenti/psicopedagogia" className="hover:text-white transition-colors">Psicopedagogia Relazionale</Link></li>
             </ul>
             <li><Link href="/#progetti" className="hover:text-white transition-colors">I Miei Progetti</Link></li>
+            <ul className="pl-4 space-y-2 text-xs border-l border-white/10 mt-2 mb-4">
+              <li><Link href="/progetti/fiabe-radice" className="hover:text-white transition-colors">Fiabe Radici</Link></li>
+              <li><Link href="/progetti/murena" className="hover:text-white transition-colors">Metodo M.U.R.E.N.A.</Link></li>
+              <li><Link href="/progetti/formazione" className="hover:text-white transition-colors">Formazione Integrata</Link></li>
+            </ul>
+            <li><Link href="/articoli" className="hover:text-white transition-colors">Articoli</Link></li>
           </ul>
         </div>
 
@@ -58,6 +64,44 @@ export default function Footer() {
               </a>
             </li>
           </ul>
+        </div>
+
+        {/* Quick Contact Col */}
+        <div>
+          <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6 text-white">Richiesta veloce</h4>
+          <form
+            action="mailto:monica.fiocco.2012@gmail.com"
+            method="POST"
+            encType="text/plain"
+            className="space-y-3"
+          >
+            <input
+              type="text"
+              name="Nome"
+              required
+              placeholder="Nome"
+              className="w-full px-4 py-3 rounded-full bg-white/8 border border-white/10 text-white placeholder:text-glicine-200/45 text-sm outline-none focus:border-glicine-300 focus:bg-white/12 transition-all"
+            />
+            <input
+              type="email"
+              name="Email"
+              required
+              placeholder="Email"
+              className="w-full px-4 py-3 rounded-full bg-white/8 border border-white/10 text-white placeholder:text-glicine-200/45 text-sm outline-none focus:border-glicine-300 focus:bg-white/12 transition-all"
+            />
+            <input
+              type="tel"
+              name="Cellulare"
+              placeholder="Cellulare"
+              className="w-full px-4 py-3 rounded-full bg-white/8 border border-white/10 text-white placeholder:text-glicine-200/45 text-sm outline-none focus:border-glicine-300 focus:bg-white/12 transition-all"
+            />
+            <button
+              type="submit"
+              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-full bg-glicine-300 hover:bg-white text-glicine-950 font-bold text-[11px] uppercase tracking-widest transition-all"
+            >
+              Invia <Send className="w-3.5 h-3.5" />
+            </button>
+          </form>
         </div>
       </div>
 

@@ -48,3 +48,16 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #ab7cbd;
 }
+
+@media (max-width: 767px) {
+  html,
+  body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
+}
