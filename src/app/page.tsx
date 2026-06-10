@@ -10,7 +10,6 @@ import {
   ChevronLeft, 
   ChevronRight,
   Send,
-  MessageCircle,
   FileText,
   UserCheck,
   Mail,
@@ -18,20 +17,27 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { articles } from "@/data/articles";
+import { CONTACT_PHONE_DISPLAY, CONTACT_WHATSAPP_URL } from "@/data/contact";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
+
+const heroImageFilter =
+  "brightness-[0.64] saturate-[1.5] contrast-[1.08]";
 
 const heroSlides = [
   {
     id: 0,
-    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1920&auto=format&fit=crop", // Soft human connection/cozy
+    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1920&auto=format&fit=crop",
+    imagePosition: "object-center",
     label: "Counseling ad Approccio Integrato",
-    title: "Accompagnare l'anima\nverso la consapevolezza",
+    title: "Accompagnare verso la consapevolezza di SE",
     subtitle: "Incontri individuali e percorsi sistemici per sbloccare le dinamiche interiori, ritrovare l'armonia e vivere in sintonia con se stessi.",
     cta: "I Miei Strumenti",
     ctaHref: "#strumenti"
   },
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?q=80&w=1920&auto=format&fit=crop", // Lavender forest / wisteria vibe
+    image: "https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?q=80&w=1920&auto=format&fit=crop",
+    imagePosition: "object-center",
     label: "Pedagogia Transgenerazionale",
     title: "Sciogliere i nodi\ndel passato familiare",
     subtitle: "Riconnettersi con le proprie radici e comprendere le eredità emotive per camminare con leggerezza nel presente.",
@@ -40,8 +46,9 @@ const heroSlides = [
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1920&auto=format&fit=crop", // Meditation / inner peace
-    title: "La forza del fare\nnell'armonia dell'essere",
+    image: "/hero-slide-armonia.png",
+    imagePosition: "object-[58%_center]",
+    title: "Il nutrimento delle relazioni autentiche\nnell'armonia dell'essere",
     label: "Formatrice & Psicopedagogista",
     subtitle: "Un percorso per riscoprire il potenziale di auto-realizzazione personale e relazionale attraverso metodi esperienziali.",
     cta: "Scrivimi",
@@ -107,11 +114,12 @@ export default function Home() {
             <img
               src={heroSlides[currentSlide].image}
               alt={heroSlides[currentSlide].title}
-              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none filter brightness-50"
+              className={`absolute inset-0 w-full h-full object-cover pointer-events-none ${heroImageFilter} ${heroSlides[currentSlide].imagePosition}`}
             />
-            {/* Soft Wisteria overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-glicine-950/80 via-glicine-900/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-glicine-50/60 via-transparent to-transparent" />
+            {/* Soft glicine overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-glicine-950/75 via-glicine-900/35 to-glicine-700/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-glicine-50/55 via-transparent to-glicine-300/10" />
+            <div className="absolute inset-0 bg-glicine-500/10 mix-blend-soft-light" />
 
             {/* Slide Content */}
             <div className="relative z-10 h-full flex items-center">
@@ -364,7 +372,7 @@ export default function Home() {
               transition={{ type: "spring", stiffness: 120, damping: 12, delay: 0.6 }}
               className="absolute -bottom-6 -right-6 z-20 bg-glicine-900 p-6 rounded-3xl text-white shadow-2xl border border-glicine-800"
             >
-              <div className="text-2xl font-extrabold font-outfit text-glicine-300">12+</div>
+              <div className="text-2xl font-extrabold font-outfit text-glicine-300">25+</div>
               <div className="text-[9px] uppercase tracking-widest font-semibold text-glicine-100 mt-1 leading-tight">
                 Anni di<br />Esperienza
               </div>
@@ -459,7 +467,7 @@ export default function Home() {
               {
                 title: "Pedagogia Transgenerazionale",
                 subtitle: "Memorie Familiari",
-                desc: "L'esplorazione del genogramma e delle eredità psicologiche tramandate di generazione in generazione per liberare il proprio percorso autonomo.",
+                desc: "L'esplorazione del genosociogramma e delle eredità psicologiche tramandate di generazione in generazione per liberare il proprio percorso autonomo.",
                 icon: BookOpen,
                 href: "/strumenti/pedagogia-transgenerazionale",
                 color: "border-indigo-200 hover:border-indigo-400 hover:shadow-indigo-400/5"
@@ -747,20 +755,25 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-outfit font-bold text-xs uppercase tracking-wider text-slate-500">Invia un'e-mail</h4>
-                    <a href="mailto:monica.fiocco.2012@gmail.com" className="text-glicine-900 font-semibold text-sm hover:underline">
-                      monica.fiocco.2012@gmail.com
+                    <a href="mailto:mofonica00@gmail.com" className="text-glicine-900 font-semibold text-sm hover:underline">
+                      mofonica00@gmail.com
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-2xl bg-white border border-glicine-100 text-glicine-700 shadow-sm">
-                    <MessageCircle className="w-5 h-5" />
+                    <WhatsAppIcon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-outfit font-bold text-xs uppercase tracking-wider text-slate-500">Contatto Telefonico</h4>
-                    <a href="tel:+393390000000" className="text-glicine-900 font-semibold text-sm hover:underline">
-                      +39 339 000 0000
+                    <h4 className="font-outfit font-bold text-xs uppercase tracking-wider text-slate-500">Scrivimi su WhatsApp</h4>
+                    <a
+                      href={CONTACT_WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-glicine-900 font-semibold text-sm hover:underline"
+                    >
+                      {CONTACT_PHONE_DISPLAY}
                     </a>
                   </div>
                 </div>
@@ -774,7 +787,7 @@ export default function Home() {
             {/* Right: Minimal Form */}
             <div className="lg:col-span-7 bg-white p-8 sm:p-12 rounded-[2.5rem] border border-glicine-100 shadow-xl">
               <form 
-                action="mailto:monica.fiocco.2012@gmail.com" 
+                action="mailto:mofonica00@gmail.com" 
                 method="POST" 
                 encType="text/plain" 
                 className="space-y-6"

@@ -334,7 +334,7 @@ export default function StrumentoPage() {
               </p>
               
               <form 
-                action="mailto:monica.fiocco.2012@gmail.com" 
+                action="mailto:mofonica00@gmail.com" 
                 method="POST" 
                 encType="text/plain"
                 className="space-y-4 text-slate-900"

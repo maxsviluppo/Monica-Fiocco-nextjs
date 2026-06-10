@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -36,6 +37,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <CookieConsent />
       </body>
     </html>
   );

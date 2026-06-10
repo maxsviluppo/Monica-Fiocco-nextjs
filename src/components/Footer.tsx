@@ -2,7 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { openCookiePreferences } from "@/components/CookieConsent";
+import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_WHATSAPP_URL } from "@/data/contact";
 
 export default function Footer() {
   return (
@@ -53,14 +56,19 @@ export default function Footer() {
           <ul className="space-y-4 text-sm">
             <li className="flex gap-3 items-center">
               <Mail className="w-4 h-4 text-glicine-300" />
-              <a href="mailto:monica.fiocco.2012@gmail.com" className="hover:text-white transition-colors">
-                monica.fiocco.2012@gmail.com
+              <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-white transition-colors">
+                {CONTACT_EMAIL}
               </a>
             </li>
             <li className="flex gap-3 items-center">
-              <Phone className="w-4 h-4 text-glicine-300" />
-              <a href="tel:+393390000000" className="hover:text-white transition-colors">
-                +39 339 000 0000
+              <WhatsAppIcon className="w-4 h-4 text-glicine-300" />
+              <a
+                href={CONTACT_WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                {CONTACT_PHONE_DISPLAY}
               </a>
             </li>
           </ul>
@@ -68,9 +76,19 @@ export default function Footer() {
 
         {/* Quick Contact Col */}
         <div>
-          <h4 className="font-bold text-xs uppercase tracking-[0.2em] mb-6 text-white">Richiesta veloce</h4>
+          <div className="space-y-3 mb-6">
+            <span className="font-bold text-xs uppercase tracking-[0.2em] text-glicine-300 block">
+              Contatto
+            </span>
+            <h4 className="font-outfit text-xl font-extrabold text-white leading-snug">
+              Richiedi informazioni
+            </h4>
+            <p className="text-sm text-glicine-300/75 font-light leading-relaxed">
+              Lascia i tuoi recapiti: ti risponderò con cura per parlare di incontri, seminari e percorsi di crescita.
+            </p>
+          </div>
           <form
-            action="mailto:monica.fiocco.2012@gmail.com"
+            action={`mailto:${CONTACT_EMAIL}`}
             method="POST"
             encType="text/plain"
             className="space-y-3"
@@ -113,9 +131,17 @@ export default function Footer() {
             DEVTOOLS
           </a>
         </p>
-        <div className="flex gap-6">
-          <Link href="#privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-          <Link href="#termini" className="hover:text-white transition-colors">Termini e Condizioni</Link>
+        <div className="flex flex-wrap justify-center md:justify-end gap-6">
+          <Link href="/privacy-policy" className="hover:text-white transition-colors">
+            Privacy Policy
+          </Link>
+          <button
+            type="button"
+            onClick={openCookiePreferences}
+            className="hover:text-white transition-colors"
+          >
+            Gestione cookie
+          </button>
         </div>
       </div>
     </footer>
