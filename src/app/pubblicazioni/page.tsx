@@ -242,7 +242,7 @@ export default function PubblicazioniPage() {
     setOrderForm(prev => ({ ...prev, quantity: val }));
   };
 
-  const bookPrice = orderForm.format === "cartaceo" ? 15.00 : 8.00;
+  const bookPrice = orderForm.format === "cartaceo" ? 18.00 : 8.00;
   const shippingCost = orderForm.format === "cartaceo" ? 3.50 : 0.00;
   const totalCost = (bookPrice * orderForm.quantity) + shippingCost;
 
@@ -520,7 +520,7 @@ export default function PubblicazioniPage() {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-glicine-400 transition-colors cursor-pointer font-bold text-sm"
                     >
-                      <option value="cartaceo">Libro Cartaceo Autografato — €15.00 (+ €3.50 sped.)</option>
+                      <option value="cartaceo">Libro Cartaceo Autografato — €18.00 (+ €3.50 sped.)</option>
                       <option value="epub">eBook Digitale (Formato EPUB) — €8.00 (Invio immediato)</option>
                     </select>
                   </div>

@@ -53,7 +53,7 @@ export default function AdminLayout({
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-glicine-950 flex items-center justify-center p-6 antialiased font-sans">
+      <div className="fixed inset-0 z-[100] bg-glicine-950 flex items-center justify-center p-6 antialiased font-sans">
         <div className="w-full max-w-md bg-glicine-900/40 border border-glicine-800/80 p-8 rounded-3xl shadow-2xl backdrop-blur-md space-y-6">
           <div className="text-center space-y-2">
             <div className="h-12 w-12 rounded-2xl bg-glicine-500/10 border border-glicine-500/30 flex items-center justify-center text-glicine-300 mx-auto">
