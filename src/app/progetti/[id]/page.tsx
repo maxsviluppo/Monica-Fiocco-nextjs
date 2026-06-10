@@ -21,6 +21,7 @@ const projectsData: Record<string, {
   tagline: string;
   tag: string;
   heroImage: string;
+  heroImagePosition?: string;
   longDesc: string;
   paragraphs?: string[];
   highlight?: string;
@@ -45,7 +46,8 @@ const projectsData: Record<string, {
     title: "Fiabe Radice",
     tagline: "Percorsi di consapevolezza attraverso la narrazione simbolica e la pedagogia transgenerazionale.",
     tag: "Crescita attraverso la narrazione",
-    heroImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1200&auto=format&fit=crop",
+    heroImage: "/radici.png",
+    heroImagePosition: "object-center",
     longDesc: "",
     paragraphs: [
       "Fiabe Radice è un progetto di crescita personale e accompagnamento evolutivo che ho ideato nel mio percorso come pedagogista e counselor ad approccio integrato, dove narrazione, lavoro simbolico e consapevolezza sistemica si intrecciano per favorire processi profondi di trasformazione interiore.",
@@ -76,7 +78,7 @@ const projectsData: Record<string, {
     closingNote:
       "È un invito a riscrivere la propria narrazione interiore, trasformando il passato in risorsa e aprendo nuovi spazi di libertà, presenza e autenticità.",
     book: {
-      cover: "/fiabe-radice-libro.png",
+      cover: "/copertina.png",
       title: "Il filo che resta",
       author: "Monica Fiocco",
       subtitle:
@@ -89,7 +91,8 @@ const projectsData: Record<string, {
     title: "Metodo M.U.R.E.N.A.",
     tagline: "Psicopedagogia relazionale per neurodiversità e autismo",
     tag: "Neurodiversità & Psicopedagogia Relazionale",
-    heroImage: "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=1200&auto=format&fit=crop",
+    heroImage: "/murena.png",
+    heroImagePosition: "object-left",
     longDesc: "",
     paragraphs: [
       "Il Metodo M.U.R.E.N.A. nasce dall'esperienza professionale e umana di Monica Fiocco, pedagogista e counselor ad approccio integrato, come percorso di psicopedagogia relazionale dedicato alla neurodiversità, all'autismo e alle situazioni di fragilità evolutiva.",
@@ -191,7 +194,7 @@ export default function ProgettoPage() {
           <img
             src={project.heroImage}
             alt={project.title}
-            className="w-full h-full object-cover object-center filter brightness-50"
+            className={`w-full h-full object-cover filter brightness-50 ${project.heroImagePosition || "object-center"}`}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-white via-glicine-950/70 to-glicine-950/20" />
         </div>

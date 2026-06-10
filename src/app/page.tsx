@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { articles } from "@/data/articles";
-import { CONTACT_PHONE_DISPLAY, CONTACT_WHATSAPP_URL } from "@/data/contact";
+import { idbGet } from "@/data/db";
+import { CONTACT_PHONE_DISPLAY, CONTACT_WHATSAPP_URL, CONTACT_FACEBOOK_URL } from "@/data/contact";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 const heroImageFilter =
@@ -29,7 +30,7 @@ const heroSlides = [
     image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1920&auto=format&fit=crop",
     imagePosition: "object-center",
     label: "Counseling ad Approccio Integrato",
-    title: "Accompagnare verso la consapevolezza di SE",
+    title: "Accompagnare verso la consapevolezza di SÉ",
     subtitle: "Incontri individuali e percorsi sistemici per sbloccare le dinamiche interiori, ritrovare l'armonia e vivere in sintonia con se stessi.",
     cta: "I Miei Strumenti",
     ctaHref: "#strumenti"
@@ -62,6 +63,78 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
+  const [displayArticles, setDisplayArticles] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const stored = await idbGet("monica_articles");
+        if (stored) {
+          setDisplayArticles(stored);
+        } else {
+          setDisplayArticles(articles);
+        }
+      } catch (e) {
+        setDisplayArticles(articles);
+      }
+    };
+    fetchArticles();
+  }, []);
+
+  const largeFeatured = React.useMemo(() => {
+    if (displayArticles.length === 0) return null;
+    const today = new Date().toISOString().split("T")[0];
+    
+    // Find valid Top Featured article
+    const top = displayArticles.find(art => 
+      art.isTopFeatured && (!art.topFeaturedEndDate || today <= art.topFeaturedEndDate)
+    );
+    if (top) return top;
+    
+    // Fallback to first available
+    return displayArticles[0];
+  }, [displayArticles]);
+
+  const sideArticles = React.useMemo(() => {
+    if (!largeFeatured) return [];
+    return displayArticles
+      .filter(art => art.slug !== largeFeatured.slug)
+      .slice(0, 3);
+  }, [displayArticles, largeFeatured]);
+
+  const handleHomeSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get("Nome") as string;
+    const email = formData.get("Email") as string;
+    const phone = (formData.get("Telefono") as string) || "Non fornito";
+    const message = formData.get("Messaggio") as string;
+
+    try {
+      const stored = localStorage.getItem("monica_contact_leads");
+      const existingLeads = stored ? JSON.parse(stored) : [];
+      const newLead = {
+        id: Date.now(),
+        name,
+        email,
+        phone,
+        message,
+        course: "Contatto Home Page",
+        date: new Date().toLocaleString("it-IT", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }),
+        status: "Nuovo"
+      };
+      localStorage.setItem("monica_contact_leads", JSON.stringify([newLead, ...existingLeads]));
+    } catch (err) {
+      console.error("Errore salvataggio lead:", err);
+    }
+
+    const subject = encodeURIComponent("Messaggio di contatto da Monica Fiocco");
+    const body = encodeURIComponent(
+      `Nome: ${name}\nEmail: ${email}\nTelefono: ${phone}\n\nMessaggio:\n${message}`
+    );
+    window.location.href = `mailto:mofonica00@gmail.com?subject=${subject}&body=${body}`;
+  };
 
   const goToSlide = useCallback((idx: number, dir?: number) => {
     setDirection(dir ?? (idx > currentSlide ? 1 : -1));
@@ -548,14 +621,15 @@ export default function Home() {
                 title: "Fiabe Radice",
                 tag: "Crescita attraverso la narrazione",
                 desc: "Un percorso unico che utilizza il potere metaforico ed archetipico delle fiabe per far emergere i bisogni emotivi, esplorare l'inconscio e stimolare l'auto-ascolto.",
-                image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop"
+                image: "/radici.png"
               },
               {
                 id: "murena",
                 title: "Metodo M.U.R.E.N.A.",
                 tag: "Formazione e Sviluppo Relazionale",
                 desc: "Un modello teorico-pratico ideato per facilitare la risoluzione dei conflitti, la gestione emotiva e lo sviluppo delle capacità comunicativo-relazionali.",
-                image: "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=800&auto=format&fit=crop"
+                image: "/murena.png",
+                imagePosition: "object-left"
               },
               {
                 id: "formazione",
@@ -577,7 +651,7 @@ export default function Home() {
                   <img
                     src={progetto.image}
                     alt={progetto.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    className={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 ${progetto.imagePosition || "object-center"}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-glicine-950/60 via-transparent to-transparent opacity-80" />
                 </div>
@@ -631,61 +705,63 @@ export default function Home() {
           </div>
 
           <div className="grid lg:grid-cols-12 gap-8 items-stretch">
-            <motion.article
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-7 group bg-white border border-glicine-100 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
-            >
-              <div className="grid md:grid-cols-2 h-full">
-                <div className="relative min-h-[280px] overflow-hidden">
-                  <img
-                    src={demoArticles[0].image}
-                    alt={demoArticles[0].title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-glicine-950/50 via-transparent to-transparent" />
-                </div>
-
-                <div className="p-8 sm:p-10 flex flex-col justify-between gap-10">
-                  <div className="space-y-5">
-                    <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-widest font-bold">
-                      <span className="px-3 py-1 rounded-full bg-glicine-100 text-glicine-800">
-                        In evidenza
-                      </span>
-                      <span className="text-glicine-600">{demoArticles[0].category}</span>
-                    </div>
-                    <div className="space-y-3">
-                      <h3 className="font-outfit text-2xl sm:text-3xl font-extrabold text-glicine-900 leading-tight group-hover:text-glicine-700 transition-colors">
-                        {demoArticles[0].title}
-                      </h3>
-                      <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-light">
-                        {demoArticles[0].excerpt}
-                      </p>
-                    </div>
+            {largeFeatured && (
+              <motion.article
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6 }}
+                className="lg:col-span-7 group bg-white border border-glicine-100 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
+              >
+                <div className="grid md:grid-cols-2 h-full">
+                  <div className="relative min-h-[280px] overflow-hidden">
+                    <img
+                      src={largeFeatured.image}
+                      alt={largeFeatured.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-glicine-950/50 via-transparent to-transparent" />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 pt-6 border-t border-slate-100">
-                    <div className="flex items-center gap-4 text-[11px] text-slate-500 font-semibold">
-                      <span>{demoArticles[0].date}</span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" /> {demoArticles[0].readTime}
-                      </span>
+                  <div className="p-8 sm:p-10 flex flex-col justify-between gap-10">
+                    <div className="space-y-5">
+                      <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-widest font-bold">
+                        <span className="px-3 py-1 rounded-full bg-glicine-100 text-glicine-800">
+                          {largeFeatured.isTopFeatured ? "Top in evidenza" : "In evidenza"}
+                        </span>
+                        <span className="text-glicine-600">{largeFeatured.category}</span>
+                      </div>
+                      <div className="space-y-3">
+                        <h3 className="font-outfit text-2xl sm:text-3xl font-extrabold text-glicine-900 leading-tight group-hover:text-glicine-700 transition-colors">
+                          {largeFeatured.title}
+                        </h3>
+                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-light">
+                          {largeFeatured.excerpt}
+                        </p>
+                      </div>
                     </div>
-                    <Link
-                      href="/articoli"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-glicine-700 hover:text-glicine-950 transition-colors group/link"
-                    >
-                      Leggi anteprima <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
-                    </Link>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 pt-6 border-t border-slate-100">
+                      <div className="flex items-center gap-4 text-[11px] text-slate-500 font-semibold">
+                        <span>{largeFeatured.date}</span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" /> {largeFeatured.readTime}
+                        </span>
+                      </div>
+                      <Link
+                        href={`/articoli/${largeFeatured.slug}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-glicine-700 hover:text-glicine-950 transition-colors group/link"
+                      >
+                        Leggi anteprima <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.article>
+              </motion.article>
+            )}
 
             <div className="lg:col-span-5 grid gap-5">
-              {demoArticles.slice(1).map((article, idx) => (
+              {sideArticles.map((article, idx) => (
                 <motion.article
                   key={article.title}
                   initial={{ opacity: 0, x: 24 }}
@@ -716,7 +792,7 @@ export default function Home() {
                         {article.excerpt}
                       </p>
                       <Link
-                        href="/articoli"
+                        href={`/articoli/${article.slug}`}
                         className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-glicine-700 hover:text-glicine-950 transition-colors group/link"
                       >
                         Apri scheda <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
@@ -777,6 +853,36 @@ export default function Home() {
                     </a>
                   </div>
                 </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-2xl bg-white border border-glicine-100 text-glicine-700 shadow-sm">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-5 h-5"
+                    >
+                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-outfit font-bold text-xs uppercase tracking-wider text-slate-500">Seguimi su Facebook</h4>
+                    <a
+                      href={CONTACT_FACEBOOK_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-glicine-900 font-semibold text-sm hover:underline"
+                    >
+                      Monica Fiocco
+                    </a>
+                  </div>
+                </div>
               </div>
 
               <div className="text-[10px] text-slate-400 font-light max-w-sm">
@@ -787,9 +893,7 @@ export default function Home() {
             {/* Right: Minimal Form */}
             <div className="lg:col-span-7 bg-white p-8 sm:p-12 rounded-[2.5rem] border border-glicine-100 shadow-xl">
               <form 
-                action="mailto:mofonica00@gmail.com" 
-                method="POST" 
-                encType="text/plain" 
+                onSubmit={handleHomeSubmit}
                 className="space-y-6"
               >
                 <div className="grid sm:grid-cols-2 gap-6">

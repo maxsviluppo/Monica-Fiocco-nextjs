@@ -10,3 +10,4 @@ export const CONTACT_WHATSAPP_MESSAGE =
   "Ciao Monica, vorrei avere maggiori informazioni.";
 
 export const CONTACT_WHATSAPP_URL = `https://wa.me/${CONTACT_PHONE_WHATSAPP}?text=${encodeURIComponent(CONTACT_WHATSAPP_MESSAGE)}`;
+export const CONTACT_FACEBOOK_URL = "https://www.facebook.com/share/18hAFV8dZN/?mibextid=wwXIfr";

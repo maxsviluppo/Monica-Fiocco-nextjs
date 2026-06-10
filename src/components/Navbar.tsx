@@ -52,6 +52,7 @@ export default function Navbar() {
       ]
     },
     { name: "Articoli", href: "/articoli" },
+    { name: "Pubblicazioni", href: "/pubblicazioni" },
   ];
 
   return (

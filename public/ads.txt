@@ -1,0 +1,2 @@
+# ads.txt placeholder for monicafiocco.it
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

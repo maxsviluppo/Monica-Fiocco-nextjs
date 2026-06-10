@@ -2,12 +2,41 @@
 
 import React from "react";
 import Link from "next/link";
-import { Mail, Send } from "lucide-react";
+import { Mail, Send, Shield } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { openCookiePreferences } from "@/components/CookieConsent";
-import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_WHATSAPP_URL } from "@/data/contact";
+import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_WHATSAPP_URL, CONTACT_FACEBOOK_URL } from "@/data/contact";
 
 export default function Footer() {
+  const handleFooterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get("Nome") as string;
+    const email = formData.get("Email") as string;
+    const phone = (formData.get("Cellulare") as string) || "Non fornito";
+    const message = "Richiesta da Footer (Contatto)";
+
+    try {
+      const existing = localStorage.getItem("monica_contact_leads") || "[]";
+      const leads = JSON.parse(existing);
+      leads.push({
+        id: "L-" + Math.floor(1000 + Math.random() * 9000),
+        name,
+        email,
+        phone,
+        message,
+        date: new Date().toISOString().split("T")[0],
+        status: "Nuovo"
+      });
+      localStorage.setItem("monica_contact_leads", JSON.stringify(leads));
+      alert("Grazie! Ti risponderò al più presto.");
+      form.reset();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <footer className="bg-glicine-950 text-glicine-200/80 pt-20 pb-10 px-6 font-sans">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
@@ -47,6 +76,7 @@ export default function Footer() {
               <li><Link href="/progetti/formazione" className="hover:text-white transition-colors">Formazione Integrata</Link></li>
             </ul>
             <li><Link href="/articoli" className="hover:text-white transition-colors">Articoli</Link></li>
+            <li><Link href="/pubblicazioni" className="hover:text-white transition-colors">Pubblicazioni</Link></li>
           </ul>
         </div>
 
@@ -71,6 +101,30 @@ export default function Footer() {
                 {CONTACT_PHONE_DISPLAY}
               </a>
             </li>
+            <li className="flex gap-3 items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4 text-glicine-300"
+              >
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              </svg>
+              <a
+                href={CONTACT_FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                Monica Fiocco
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -88,9 +142,7 @@ export default function Footer() {
             </p>
           </div>
           <form
-            action={`mailto:${CONTACT_EMAIL}`}
-            method="POST"
-            encType="text/plain"
+            onSubmit={handleFooterSubmit}
             className="space-y-3"
           >
             <input
@@ -129,7 +181,10 @@ export default function Footer() {
           © {new Date().getFullYear()} Monica Fiocco · Tutti i diritti riservati ·{" "}
           <a href="mailto:castromassimo@gmail.com" className="hover:text-white transition-colors">
             DEVTOOLS
-          </a>
+          </a>{" "}
+          <Link href="/admin" className="inline-flex items-center hover:text-white transition-colors ml-1.5" title="Pannello Amministrazione">
+            <Shield className="h-3.5 w-3.5" />
+          </Link>
         </p>
         <div className="flex flex-wrap justify-center md:justify-end gap-6">
           <Link href="/privacy-policy" className="hover:text-white transition-colors">

@@ -1,21 +1,68 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Clock, Heart, Search, Sparkles, Star } from "lucide-react";
 import { articleCategories, articles } from "@/data/articles";
+import { idbGet } from "@/data/db";
 
 export default function ArticoliPage() {
   const [activeCategory, setActiveCategory] = useState("Tutti");
+  const [displayArticles, setDisplayArticles] = useState<any[]>([]);
+  const [categoriesList, setCategoriesList] = useState<string[]>([]);
 
-  const featuredArticle = articles.find((article) => article.isFeatured) ?? articles[0];
-  const favoriteArticles = articles.filter((article) => article.isFavorite);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const stored = await idbGet("monica_articles");
+        if (stored) {
+          setDisplayArticles(stored);
+        } else {
+          setDisplayArticles(articles);
+        }
+
+        const storedCats = localStorage.getItem("monica_categories");
+        if (storedCats) {
+          setCategoriesList(["Tutti", ...JSON.parse(storedCats)]);
+        } else {
+          setCategoriesList(articleCategories);
+        }
+      } catch (e) {
+        setDisplayArticles(articles);
+        setCategoriesList(articleCategories);
+      }
+    };
+    loadData();
+  }, []);
+
+  const featuredArticle = useMemo(() => {
+    if (displayArticles.length === 0) return null;
+    const today = new Date().toISOString().split("T")[0];
+
+    // Find valid Top Featured or standard Featured article
+    const top = displayArticles.find(art => 
+      art.isTopFeatured && (!art.topFeaturedEndDate || today <= art.topFeaturedEndDate)
+    );
+    if (top) return top;
+
+    const feat = displayArticles.find(art => 
+      art.isFeatured && (!art.featuredEndDate || today <= art.featuredEndDate)
+    );
+    if (feat) return feat;
+
+    return displayArticles[0];
+  }, [displayArticles]);
+
+  const favoriteArticles = useMemo(() => {
+    return displayArticles.filter((article) => article.isFavorite);
+  }, [displayArticles]);
+
   const filteredArticles = useMemo(() => {
     return activeCategory === "Tutti"
-      ? articles
-      : articles.filter((article) => article.category === activeCategory);
-  }, [activeCategory]);
+      ? displayArticles
+      : displayArticles.filter((article) => article.category === activeCategory);
+  }, [activeCategory, displayArticles]);
 
   return (
     <div className="bg-white min-h-screen">
@@ -23,7 +70,7 @@ export default function ArticoliPage() {
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1800&auto=format&fit=crop"
-            alt="Scrivania editoriale con appunti"
+            alt="Scrivania editoriale con seminari"
             className="w-full h-full object-cover opacity-35"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-glicine-950 via-glicine-950/85 to-glicine-900/60" />
@@ -35,7 +82,7 @@ export default function ArticoliPage() {
               <BookOpen className="w-4 h-4" /> Bacheca editoriale
             </span>
             <h1 className="font-outfit text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
-              Articoli, appunti e percorsi di consapevolezza
+              Articoli, seminari e percorsi di consapevolezza
             </h1>
             <p className="text-glicine-100/90 text-base sm:text-lg leading-relaxed max-w-3xl font-light">
               Una raccolta dinamica di contenuti divulgativi organizzati per categorie, preferiti e temi. Per ora i contenuti sono dimostrativi; la struttura e gia pronta per un editoriale con pubblicazione da backend.
@@ -54,38 +101,46 @@ export default function ArticoliPage() {
           >
             <div className="grid md:grid-cols-2 h-full">
               <div className="relative min-h-[300px] overflow-hidden">
-                <img
-                  src={featuredArticle.image}
-                  alt={featuredArticle.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                />
-                <div className="absolute left-5 top-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-glicine-400 text-glicine-950 text-[10px] font-extrabold uppercase tracking-widest shadow-lg">
-                  <Star className="w-3.5 h-3.5 fill-current" /> In evidenza
-                </div>
+                {featuredArticle && (
+                  <>
+                    <img
+                      src={featuredArticle.image}
+                      alt={featuredArticle.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    />
+                    <div className="absolute left-5 top-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-glicine-400 text-glicine-950 text-[10px] font-extrabold uppercase tracking-widest shadow-lg">
+                      <Star className="w-3.5 h-3.5 fill-current" /> {featuredArticle.isTopFeatured ? "Top in evidenza" : "In evidenza"}
+                    </div>
+                  </>
+                )}
               </div>
               <div className="p-8 sm:p-10 flex flex-col justify-between gap-8">
-                <div className="space-y-5">
-                  <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-widest font-bold">
-                    <span className="px-3 py-1 rounded-full bg-glicine-100 text-glicine-800">
-                      {featuredArticle.category}
-                    </span>
-                    <span className="text-slate-400">{featuredArticle.date}</span>
-                  </div>
-                  <h2 className="font-outfit text-2xl sm:text-3xl font-extrabold text-glicine-900 leading-tight">
-                    {featuredArticle.title}
-                  </h2>
-                  <p className="text-slate-600 leading-relaxed font-light">
-                    {featuredArticle.excerpt}
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-slate-100">
-                  <span className="inline-flex items-center gap-2 text-[11px] text-slate-500 font-semibold">
-                    <Clock className="w-3.5 h-3.5" /> {featuredArticle.readTime}
-                  </span>
-                  <Link href={`/articoli/${featuredArticle.slug}`} className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-glicine-700 hover:text-glicine-950 transition-colors group/link">
-                    Apri articolo <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
-                  </Link>
-                </div>
+                {featuredArticle && (
+                  <>
+                    <div className="space-y-5">
+                      <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-widest font-bold">
+                        <span className="px-3 py-1 rounded-full bg-glicine-100 text-glicine-800">
+                          {featuredArticle.category}
+                        </span>
+                        <span className="text-slate-400">{featuredArticle.date}</span>
+                      </div>
+                      <h2 className="font-outfit text-2xl sm:text-3xl font-extrabold text-glicine-900 leading-tight">
+                        {featuredArticle.title}
+                      </h2>
+                      <p className="text-slate-600 leading-relaxed font-light">
+                        {featuredArticle.excerpt}
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-slate-100">
+                      <span className="inline-flex items-center gap-2 text-[11px] text-slate-500 font-semibold">
+                        <Clock className="w-3.5 h-3.5" /> {featuredArticle.readTime}
+                      </span>
+                      <Link href={`/articoli/${featuredArticle.slug}`} className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-glicine-700 hover:text-glicine-950 transition-colors group/link">
+                        Apri articolo <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </motion.article>
@@ -130,7 +185,7 @@ export default function ArticoliPage() {
               </h2>
             </div>
             <div className="-mx-6 flex gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
-              {articleCategories.map((category) => (
+              {categoriesList.map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
