@@ -166,8 +166,8 @@ export default function AdminArticlesPage() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 4 * 1024 * 1024) {
-        showToast("L'immagine supera i 4MB. Scegli un file più leggero.", "info");
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("L'immagine supera i 10MB. Scegli un file più leggero.", "info");
         return;
       }
       
@@ -890,7 +890,7 @@ export default function AdminArticlesPage() {
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   />
                   <span className="text-xs text-glicine-400 font-semibold flex items-center gap-2">
-                    <Upload className="h-4 w-4" /> Seleziona un file (Max 4MB)
+                    <Upload className="h-4 w-4" /> Seleziona un file (Max 10MB)
                   </span>
                 </div>
               </div>
