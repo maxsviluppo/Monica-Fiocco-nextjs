@@ -100,16 +100,21 @@ export default function ArticoloPage() {
             />
           </div>
 
-          <p className="text-xl leading-relaxed text-slate-700 font-light">
-            Questo è un contenuto dimostrativo pensato per mostrare la composizione editoriale dell'articolo. Nel prossimo passaggio potremo collegare questa pagina a un modello backend con titolo, sintesi, categoria, copertina, stato di pubblicazione e corpo testuale modificabile da editor.
-          </p>
-          <h2 className="font-outfit text-2xl font-extrabold text-glicine-900 mt-12 mb-4">Una traccia di lettura</h2>
-          <p className="text-slate-600 leading-relaxed font-light">
-            Ogni articolo potrà diventare uno spazio ordinato per approfondire temi di counseling, pedagogia, relazione e crescita personale. La struttura visiva mantiene in evidenza la sintesi iniziale, mentre il corpo centrale può accogliere paragrafi, citazioni, immagini e richiami ai percorsi collegati.
-          </p>
-          <p className="text-slate-600 leading-relaxed font-light">
-            La bacheca potrà inoltre distinguere articoli in bozza, pubblicati, preferiti o programmati, lasciando all'editor la possibilità di curare categorie e ordine di lettura.
-          </p>
+          {article.content ? (
+            article.content.split("\n").map((para: string, idx: number) => {
+              const trimmed = para.trim();
+              if (!trimmed) return null;
+              return (
+                <p key={idx} className="text-slate-600 leading-relaxed font-light text-base sm:text-lg mb-4">
+                  {trimmed}
+                </p>
+              );
+            })
+          ) : (
+            <p className="text-slate-600 leading-relaxed font-light text-base sm:text-lg">
+              {article.excerpt}
+            </p>
+          )}
         </div>
         <div className="clear-both" />
       </section>

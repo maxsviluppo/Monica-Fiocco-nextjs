@@ -462,7 +462,7 @@ export default function ProgettoPage() {
               </p>
 
               <form 
-                action="mailto:mofonica00@gmail.com" 
+                action="mailto:monicafiocco00@gmail.com" 
                 method="POST" 
                 encType="text/plain"
                 className="space-y-4 text-slate-900"

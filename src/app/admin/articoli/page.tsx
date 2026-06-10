@@ -64,6 +64,7 @@ export default function AdminArticlesPage() {
     title: "",
     category: "",
     excerpt: "",
+    content: "",
     image: "",
     author: "Monica Fiocco",
     readTime: "5 min",
@@ -262,6 +263,7 @@ export default function AdminArticlesPage() {
       title: "",
       category: initialCat,
       excerpt: "",
+      content: "",
       image: "",
       author: "Monica Fiocco",
       readTime: "5 min",
@@ -287,6 +289,7 @@ export default function AdminArticlesPage() {
       title: article.title,
       category: article.category,
       excerpt: article.excerpt,
+      content: article.content || "",
       image: article.image,
       author: article.author,
       readTime: article.readTime,
@@ -391,6 +394,7 @@ export default function AdminArticlesPage() {
       title: formValues.title,
       category: formValues.category,
       excerpt: formValues.excerpt,
+      content: formValues.content,
       image: formValues.image || "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=1200&auto=format&fit=crop",
       author: formValues.author,
       readTime: formValues.readTime,
@@ -842,6 +846,19 @@ export default function AdminArticlesPage() {
                 onChange={handleInputChange}
                 placeholder="Inserisci un breve estratto del testo che comparirà nelle schede..."
                 className="w-full px-4 py-3 rounded-xl border border-glicine-800 bg-glicine-950/60 text-white placeholder-glicine-700 focus:outline-none focus:border-glicine-400 transition-all resize-none leading-relaxed"
+              />
+            </div>
+
+            {/* Content / Body */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-glicine-300 uppercase tracking-wider block">Corpo dell'articolo / Testo Completo</label>
+              <textarea 
+                name="content"
+                rows={10}
+                value={formValues.content}
+                onChange={handleInputChange}
+                placeholder="Inserisci il testo completo dell'articolo. Puoi usare gli a capo per creare i paragrafi..."
+                className="w-full px-4 py-3 rounded-xl border border-glicine-800 bg-glicine-950/60 text-white placeholder-glicine-700 focus:outline-none focus:border-glicine-400 transition-all leading-relaxed"
               />
             </div>
 

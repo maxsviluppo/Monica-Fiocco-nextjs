@@ -133,7 +133,7 @@ export default function Home() {
     const body = encodeURIComponent(
       `Nome: ${name}\nEmail: ${email}\nTelefono: ${phone}\n\nMessaggio:\n${message}`
     );
-    window.location.href = `mailto:mofonica00@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:monicafiocco00@gmail.com?subject=${subject}&body=${body}`;
   };
 
   const goToSlide = useCallback((idx: number, dir?: number) => {
@@ -831,8 +831,8 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-outfit font-bold text-xs uppercase tracking-wider text-slate-500">Invia un'e-mail</h4>
-                    <a href="mailto:mofonica00@gmail.com" className="text-glicine-900 font-semibold text-sm hover:underline">
-                      mofonica00@gmail.com
+                    <a href="mailto:monicafiocco00@gmail.com" className="text-glicine-900 font-semibold text-sm hover:underline">
+                      monicafiocco00@gmail.com
                     </a>
                   </div>
                 </div>

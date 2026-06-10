@@ -1,5 +1,5 @@
 export const CONTACT_NAME = "Monica Fiocco";
-export const CONTACT_EMAIL = "mofonica00@gmail.com";
+export const CONTACT_EMAIL = "monicafiocco00@gmail.com";
 export const CONTACT_LOCATION = "Napoli, Italia";
 
 export const CONTACT_PHONE_DISPLAY = "+39 333 721 3982";
