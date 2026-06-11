@@ -21,7 +21,7 @@ import {
   Award
 } from "lucide-react";
 import { articles as initialArticles, Article as BaseArticle } from "@/data/articles";
-import { idbGet, idbSet } from "@/data/db";
+import { supabase } from "@/data/supabase";
 
 interface ExtendedArticle extends BaseArticle {
   orderPriority?: number;
@@ -94,46 +94,97 @@ export default function AdminArticlesPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  // Load articles & categories from IndexedDB/localStorage
+  // Load articles & categories from Supabase
   useEffect(() => {
     const loadData = async () => {
       try {
-        const storedArticles = await idbGet("monica_articles");
+        const { data: dbArticles, error: artError } = await supabase
+          .from("articles")
+          .select("*")
+          .order("order_priority", { ascending: true });
+
+        if (artError) throw artError;
+
         let loadedArticles: ExtendedArticle[] = [];
-        if (storedArticles) {
-          loadedArticles = storedArticles;
+        if (dbArticles && dbArticles.length > 0) {
+          loadedArticles = dbArticles.map((art: any) => ({
+            slug: art.slug,
+            title: art.title,
+            category: art.category,
+            date: art.date,
+            readTime: art.read_time,
+            excerpt: art.excerpt,
+            image: art.image,
+            author: art.author,
+            isFeatured: art.is_featured,
+            isFavorite: art.is_favorite,
+            content: art.content,
+            orderPriority: art.order_priority,
+            tags: art.tags || [],
+            isEvent: art.is_event,
+            featuredEndDate: art.featured_end_date,
+            autoIndexing: art.auto_indexing,
+            isTopFeatured: art.is_top_featured,
+            topFeaturedEndDate: art.top_featured_end_date
+          }));
         } else {
-          // Fallback check on localStorage for older data
-          const localStored = localStorage.getItem("monica_articles");
-          if (localStored) {
-            loadedArticles = JSON.parse(localStored);
-            await idbSet("monica_articles", loadedArticles); // Migrate to IndexedDB
-            localStorage.removeItem("monica_articles");
-          } else {
-            loadedArticles = initialArticles.map((art, idx) => ({
-              ...art,
-              orderPriority: (idx + 1) * 10,
-              tags: [art.category.toLowerCase()],
-              isEvent: false,
-              featuredEndDate: art.isFeatured ? "2026-12-31" : "",
-              autoIndexing: true,
-              isTopFeatured: idx === 0, // Seed first article as Top Featured
-              topFeaturedEndDate: idx === 0 ? "2026-12-31" : ""
-            }));
-            await idbSet("monica_articles", loadedArticles);
-          }
+          // Database is empty, seed it!
+          const initialExtended = initialArticles.map((art, idx) => ({
+            ...art,
+            orderPriority: (idx + 1) * 10,
+            tags: [art.category.toLowerCase()],
+            isEvent: false,
+            featuredEndDate: art.isFeatured ? "2026-12-31" : "",
+            autoIndexing: true,
+            isTopFeatured: idx === 0,
+            topFeaturedEndDate: idx === 0 ? "2026-12-31" : ""
+          }));
+          
+          const seedData = initialExtended.map(art => ({
+            slug: art.slug,
+            title: art.title,
+            category: art.category,
+            date: art.date,
+            read_time: art.readTime,
+            excerpt: art.excerpt,
+            image: art.image,
+            author: art.author,
+            is_featured: art.isFeatured,
+            is_favorite: art.isFavorite,
+            content: art.content || "",
+            order_priority: art.orderPriority,
+            tags: art.tags,
+            is_event: art.isEvent,
+            featured_end_date: art.featuredEndDate,
+            auto_indexing: art.autoIndexing,
+            is_top_featured: art.isTopFeatured,
+            top_featured_end_date: art.topFeaturedEndDate
+          }));
+          
+          await supabase.from("articles").insert(seedData);
+          loadedArticles = initialExtended;
         }
         setArticles(loadedArticles);
 
-        const storedCats = localStorage.getItem("monica_categories");
-        if (storedCats) {
-          setCustomCategories(JSON.parse(storedCats));
+        const { data: dbCats, error: catError } = await supabase
+          .from("categories")
+          .select("*")
+          .order("name", { ascending: true });
+
+        if (catError) throw catError;
+
+        let loadedCats: string[] = [];
+        if (dbCats && dbCats.length > 0) {
+          loadedCats = dbCats.map((c: any) => c.name);
         } else {
-          localStorage.setItem("monica_categories", JSON.stringify(defaultCategories));
-          setCustomCategories(defaultCategories);
+          // Seed default categories
+          const seedCats = defaultCategories.map(name => ({ name }));
+          await supabase.from("categories").insert(seedCats);
+          loadedCats = defaultCategories;
         }
+        setCustomCategories(loadedCats);
       } catch (e) {
-        console.error(e);
+        console.error("Error loading data from Supabase:", e);
       }
     };
     loadData();
@@ -146,20 +197,39 @@ export default function AdminArticlesPage() {
       return priorityA - priorityB;
     });
     setArticles(sorted);
+    
     try {
-      await idbSet("monica_articles", sorted);
+      const dbData = sorted.map(art => ({
+        slug: art.slug,
+        title: art.title,
+        category: art.category,
+        date: art.date,
+        read_time: art.readTime,
+        excerpt: art.excerpt,
+        image: art.image,
+        author: art.author,
+        is_featured: art.isFeatured,
+        is_favorite: art.isFavorite,
+        content: art.content || "",
+        order_priority: art.orderPriority,
+        tags: art.tags || [],
+        is_event: art.isEvent || false,
+        featured_end_date: art.featuredEndDate || "",
+        auto_indexing: art.autoIndexing ?? true,
+        is_top_featured: art.isTopFeatured || false,
+        top_featured_end_date: art.topFeaturedEndDate || ""
+      }));
+      
+      const { error } = await supabase.from("articles").upsert(dbData, { onConflict: "slug" });
+      if (error) throw error;
     } catch (e) {
-      console.error(e);
+      console.error("Error saving articles to Supabase:", e);
+      showToast("Errore durante il salvataggio nel database", "info");
     }
   };
 
   const saveCategories = (updatedCats: string[]) => {
     setCustomCategories(updatedCats);
-    try {
-      localStorage.setItem("monica_categories", JSON.stringify(updatedCats));
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   // Vercel Blob file upload helper
@@ -199,17 +269,23 @@ export default function AdminArticlesPage() {
   };
 
   // Categories Operations
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     const trimmed = newCategoryName.trim();
     if (!trimmed) return;
     if (customCategories.some(c => c.toLowerCase() === trimmed.toLowerCase())) {
       showToast("Questa categoria esiste già!", "info");
       return;
     }
-    const updated = [...customCategories, trimmed];
-    saveCategories(updated);
-    setNewCategoryName("");
-    showToast("Categoria aggiunta", "success");
+    try {
+      const { error } = await supabase.from("categories").insert({ name: trimmed });
+      if (error) throw error;
+      setCustomCategories([...customCategories, trimmed]);
+      setNewCategoryName("");
+      showToast("Categoria aggiunta", "success");
+    } catch (e) {
+      console.error("Error adding category:", e);
+      showToast("Errore durante il salvataggio della categoria", "info");
+    }
   };
 
   const handleStartEditCategory = (index: number, val: string) => {
@@ -217,7 +293,7 @@ export default function AdminArticlesPage() {
     setEditingCategoryVal(val);
   };
 
-  const handleSaveCategoryEdit = (index: number) => {
+  const handleSaveCategoryEdit = async (index: number) => {
     const trimmed = editingCategoryVal.trim();
     if (!trimmed) return;
     const oldName = customCategories[index];
@@ -225,32 +301,62 @@ export default function AdminArticlesPage() {
       showToast("Esiste già un'altra categoria con questo nome!", "info");
       return;
     }
-    const updated = customCategories.map((c, idx) => idx === index ? trimmed : c);
-    saveCategories(updated);
+    
+    try {
+      const { error: catErr } = await supabase
+        .from("categories")
+        .update({ name: trimmed })
+        .eq("name", oldName);
+      if (catErr) throw catErr;
 
-    const updatedArticles = articles.map(art => {
-      if (art.category === oldName) {
-        return { ...art, category: trimmed };
-      }
-      return art;
-    });
-    saveArticles(updatedArticles);
+      const { error: artErr } = await supabase
+        .from("articles")
+        .update({ category: trimmed })
+        .eq("category", oldName);
+      if (artErr) throw artErr;
 
-    setEditingCategoryIdx(null);
-    setEditingCategoryVal("");
-    showToast("Categoria rinominata con successo", "success");
+      const updatedCats = customCategories.map((c, idx) => idx === index ? trimmed : c);
+      setCustomCategories(updatedCats);
+
+      const updatedArticles = articles.map(art => {
+        if (art.category === oldName) {
+          return { ...art, category: trimmed };
+        }
+        return art;
+      });
+      setArticles(updatedArticles);
+
+      setEditingCategoryIdx(null);
+      setEditingCategoryVal("");
+      showToast("Categoria rinominata con successo", "success");
+    } catch (e) {
+      console.error("Error updating category:", e);
+      showToast("Errore durante la modifica della categoria", "info");
+    }
   };
 
-  const handleDeleteCategory = (index: number) => {
+  const handleDeleteCategory = async (index: number) => {
     const nameToDelete = customCategories[index];
     const isUsed = articles.some(art => art.category === nameToDelete);
     if (isUsed) {
       showToast(`Impossibile eliminare: categoria in uso`, "info");
       return;
     }
-    const updated = customCategories.filter((_, idx) => idx !== index);
-    saveCategories(updated);
-    showToast("Categoria eliminata", "success");
+    
+    try {
+      const { error } = await supabase
+        .from("categories")
+        .delete()
+        .eq("name", nameToDelete);
+      if (error) throw error;
+      
+      const updated = customCategories.filter((_, idx) => idx !== index);
+      setCustomCategories(updated);
+      showToast("Categoria eliminata", "success");
+    } catch (e) {
+      console.error("Error deleting category:", e);
+      showToast("Errore durante l'eliminazione della categoria", "info");
+    }
   };
 
   // Handle open Form for creation
@@ -435,10 +541,19 @@ export default function AdminArticlesPage() {
     setCurrentArticle(null);
   };
 
-  const handleDeleteExecute = (slug: string) => {
-    const updated = articles.filter(art => art.slug !== slug);
-    saveArticles(updated);
-    showToast("Articolo eliminato definitivamente", "success");
+  const handleDeleteExecute = async (slug: string) => {
+    try {
+      const { error } = await supabase.from("articles").delete().eq("slug", slug);
+      if (error) throw error;
+      const updated = articles.filter(art => art.slug !== slug);
+      // We pass the updated list, but saveArticles will only upsert. Since it was already deleted from DB above, 
+      // upserting the remaining ones will keep it in sync. Locally, we update state:
+      setArticles(updated.sort((a, b) => (a.orderPriority ?? 99) - (b.orderPriority ?? 99)));
+      showToast("Articolo eliminato definitivamente", "success");
+    } catch (e) {
+      console.error("Error deleting article:", e);
+      showToast("Errore durante l'eliminazione dell'articolo", "info");
+    }
     setShowDeleteModal(null);
   };
 

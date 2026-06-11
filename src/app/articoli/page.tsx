@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Clock, Heart, Search, Sparkles, Star } from "lucide-react";
 import { articleCategories, articles } from "@/data/articles";
-import { idbGet } from "@/data/db";
+import { supabase } from "@/data/supabase";
 
 export default function ArticoliPage() {
   const [activeCategory, setActiveCategory] = useState("Tutti");
@@ -15,20 +15,53 @@ export default function ArticoliPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const stored = await idbGet("monica_articles");
-        if (stored) {
-          setDisplayArticles(stored);
+        const { data: dbArticles, error: artError } = await supabase
+          .from("articles")
+          .select("*")
+          .order("order_priority", { ascending: true });
+
+        if (artError) throw artError;
+
+        if (dbArticles && dbArticles.length > 0) {
+          const mappedArticles = dbArticles.map((art: any) => ({
+            slug: art.slug,
+            title: art.title,
+            category: art.category,
+            date: art.date,
+            readTime: art.read_time,
+            excerpt: art.excerpt,
+            image: art.image,
+            author: art.author,
+            isFeatured: art.is_featured,
+            isFavorite: art.is_favorite,
+            content: art.content,
+            orderPriority: art.order_priority,
+            tags: art.tags || [],
+            isEvent: art.is_event,
+            featuredEndDate: art.featured_end_date,
+            autoIndexing: art.auto_indexing,
+            isTopFeatured: art.is_top_featured,
+            topFeaturedEndDate: art.top_featured_end_date
+          }));
+          setDisplayArticles(mappedArticles);
         } else {
           setDisplayArticles(articles);
         }
 
-        const storedCats = localStorage.getItem("monica_categories");
-        if (storedCats) {
-          setCategoriesList(["Tutti", ...JSON.parse(storedCats)]);
+        const { data: dbCats, error: catError } = await supabase
+          .from("categories")
+          .select("name")
+          .order("name", { ascending: true });
+
+        if (catError) throw catError;
+
+        if (dbCats && dbCats.length > 0) {
+          setCategoriesList(["Tutti", ...dbCats.map((c: any) => c.name)]);
         } else {
           setCategoriesList(articleCategories);
         }
       } catch (e) {
+        console.error("Error loading articles from Supabase:", e);
         setDisplayArticles(articles);
         setCategoriesList(articleCategories);
       }

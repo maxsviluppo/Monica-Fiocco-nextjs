@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock, Heart } from "lucide-react";
 import { articles } from "@/data/articles";
-import { idbGet } from "@/data/db";
+import { supabase } from "@/data/supabase";
 
 export default function ArticoloPage() {
   const params = useParams();
@@ -16,11 +16,41 @@ export default function ArticoloPage() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const stored = await idbGet("monica_articles");
-        const list = stored ? stored : articles;
-        const found = list.find((item: any) => item.slug === slug);
-        setArticle(found || null);
+        const { data: dbArticle, error } = await supabase
+          .from("articles")
+          .select("*")
+          .eq("slug", slug)
+          .single();
+
+        if (error) throw error;
+
+        if (dbArticle) {
+          setArticle({
+            slug: dbArticle.slug,
+            title: dbArticle.title,
+            category: dbArticle.category,
+            date: dbArticle.date,
+            readTime: dbArticle.read_time,
+            excerpt: dbArticle.excerpt,
+            image: dbArticle.image,
+            author: dbArticle.author,
+            isFeatured: dbArticle.is_featured,
+            isFavorite: dbArticle.is_favorite,
+            content: dbArticle.content,
+            orderPriority: dbArticle.order_priority,
+            tags: dbArticle.tags || [],
+            isEvent: dbArticle.is_event,
+            featuredEndDate: dbArticle.featured_end_date,
+            autoIndexing: dbArticle.auto_indexing,
+            isTopFeatured: dbArticle.is_top_featured,
+            topFeaturedEndDate: dbArticle.top_featured_end_date
+          });
+        } else {
+          setArticle(null);
+        }
       } catch (e) {
+        console.error("Error loading article from Supabase:", e);
+        // Fallback to static articles
         setArticle(articles.find((item) => item.slug === slug) || null);
       } finally {
         setLoading(false);

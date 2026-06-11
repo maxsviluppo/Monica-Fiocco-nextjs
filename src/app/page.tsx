@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { articles } from "@/data/articles";
-import { idbGet } from "@/data/db";
+import { supabase } from "@/data/supabase";
 import { CONTACT_PHONE_DISPLAY, CONTACT_WHATSAPP_URL, CONTACT_FACEBOOK_URL } from "@/data/contact";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
@@ -68,13 +68,40 @@ export default function Home() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const stored = await idbGet("monica_articles");
-        if (stored) {
-          setDisplayArticles(stored);
+        const { data: dbArticles, error } = await supabase
+          .from("articles")
+          .select("*")
+          .order("order_priority", { ascending: true });
+
+        if (error) throw error;
+
+        if (dbArticles && dbArticles.length > 0) {
+          const mappedArticles = dbArticles.map((art: any) => ({
+            slug: art.slug,
+            title: art.title,
+            category: art.category,
+            date: art.date,
+            readTime: art.read_time,
+            excerpt: art.excerpt,
+            image: art.image,
+            author: art.author,
+            isFeatured: art.is_featured,
+            isFavorite: art.is_favorite,
+            content: art.content,
+            orderPriority: art.order_priority,
+            tags: art.tags || [],
+            isEvent: art.is_event,
+            featuredEndDate: art.featured_end_date,
+            autoIndexing: art.auto_indexing,
+            isTopFeatured: art.is_top_featured,
+            topFeaturedEndDate: art.top_featured_end_date
+          }));
+          setDisplayArticles(mappedArticles);
         } else {
           setDisplayArticles(articles);
         }
       } catch (e) {
+        console.error("Error fetching articles from Supabase:", e);
         setDisplayArticles(articles);
       }
     };
