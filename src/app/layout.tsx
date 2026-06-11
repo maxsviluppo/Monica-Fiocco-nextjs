@@ -20,7 +20,9 @@ export const metadata: Metadata = {
   description: "Monica Fiocco - Counselor ad approccio integrato, psicopedagogista e formatrice. Ti accompagno in percorsi di crescita, costellazioni familiari e pedagogia transgenerazionale.",
   keywords: ["counselor napoli", "psicopedagogista", "costellazioni familiari", "crescita personale", "pedagogia transgenerazionale", "monica fiocco"],
   icons: {
-    icon: "/icon.png",
+    icon: "/faviconfiocco.png",
+    shortcut: "/faviconfiocco.png",
+    apple: "/faviconfiocco.png",
   }
 };
 
