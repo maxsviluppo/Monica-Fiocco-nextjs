@@ -258,10 +258,10 @@ export default function AdminArticlesPage() {
           ...prev,
           image: data.url
         }));
-        showToast("Immagine caricata su Vercel Blob!", "success");
+        showToast("Immagine caricata con successo!", "success");
       } catch (err: any) {
-        console.error(err);
-        showToast("Impossibile caricare l'immagine su Vercel", "info");
+        console.error("Upload failed:", err);
+        showToast(`Impossibile caricare l'immagine: ${err.message || 'Verifica configurazione'}`, "info");
       } finally {
         e.target.value = ""; // Reset to allow re-selection
       }
