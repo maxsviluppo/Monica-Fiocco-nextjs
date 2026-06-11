@@ -721,13 +721,13 @@ export default function Home() {
                 Articoli e riflessioni
               </h2>
               <p className="text-slate-600 font-light text-base sm:text-lg leading-relaxed">
-                Uno spazio editoriale dedicato a counseling, pedagogia, relazioni e percorsi transgenerazionali. Per ora contiene articoli dimostrativi, pronti per essere collegati al futuro pannello di gestione e pubblicazione.
+                Uno spazio di informazione e approfondimento su tematiche di counseling, crescita emotiva, pedagogia e costellazioni familiari. Articoli e spunti di riflessione per orientarsi nel cambiamento.
               </p>
             </div>
 
             <div className="inline-flex items-center gap-2 self-start lg:self-auto px-4 py-2 rounded-full bg-white border border-glicine-100 text-glicine-700 shadow-sm">
               <FileText className="w-4 h-4" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">Archivio in preparazione</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Ultimi Articoli</span>
             </div>
           </div>
 

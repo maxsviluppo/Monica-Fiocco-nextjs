@@ -118,7 +118,7 @@ export default function ArticoliPage() {
               Articoli, seminari e percorsi di consapevolezza
             </h1>
             <p className="text-glicine-100/90 text-base sm:text-lg leading-relaxed max-w-3xl font-light">
-              Una raccolta dinamica di contenuti divulgativi organizzati per categorie, preferiti e temi. Per ora i contenuti sono dimostrativi; la struttura e gia pronta per un editoriale con pubblicazione da backend.
+              Esplora riflessioni, approfondimenti e notizie dedicati alla crescita personale, alla psicopedagogia e alle dinamiche transgenerazionali. Uno spazio di divulgazione e consapevolezza per nutrire la mente e l'anima.
             </p>
           </div>
         </div>
@@ -283,16 +283,16 @@ export default function ArticoliPage() {
             <aside className="lg:col-span-4 space-y-6">
               <div className="bg-glicine-50/50 border border-glicine-100 rounded-[1.7rem] p-7 space-y-4">
                 <Search className="w-6 h-6 text-glicine-600" />
-                <h3 className="font-outfit text-xl font-extrabold text-glicine-900">Prossimo step backend</h3>
+                <h3 className="font-outfit text-xl font-extrabold text-glicine-900">Crescita e Consapevolezza</h3>
                 <p className="text-slate-600 text-sm leading-relaxed font-light">
-                  Qui collegheremo ricerca, stato bozza/pubblicato, categorie modificabili, immagine di copertina, preferiti e composizione dell'articolo da editor.
+                  Attraverso la scrittura e la condivisione, approfondiamo i temi delle Costellazioni Familiari, del Counseling e dell'analisi transgenerazionale per ritrovare equilibrio e benessere.
                 </p>
               </div>
               <div className="bg-glicine-950 text-white rounded-[1.7rem] p-7 space-y-4">
                 <Sparkles className="w-6 h-6 text-glicine-300" />
-                <h3 className="font-outfit text-xl font-extrabold">Composizione editoriale</h3>
+                <h3 className="font-outfit text-xl font-extrabold">Spazio di Condivisione</h3>
                 <p className="text-glicine-100 text-sm leading-relaxed font-light">
-                  Il layout prevede titolo, occhiello, sintesi, categoria, autore, tempi di lettura, preferito, copertina e corpo contenuto.
+                  Riflessioni nate dall'esperienza clinica e formativa per stimolare la consapevolezza di sé e favorire lo sviluppo di relazioni umane sane e armoniose.
                 </p>
               </div>
             </aside>
