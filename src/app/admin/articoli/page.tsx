@@ -232,7 +232,7 @@ export default function AdminArticlesPage() {
     setCustomCategories(updatedCats);
   };
 
-  // Vercel Blob file upload helper
+  // Client-side Supabase Storage upload
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -243,27 +243,31 @@ export default function AdminArticlesPage() {
       
       try {
         showToast("Caricamento immagine in corso...", "info");
-        const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
-          method: "POST",
-          body: file,
-        });
+        
+        const fileExt = file.name.split(".").pop() || "jpg";
+        const uniqueFilename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
 
-        if (!response.ok) {
-          let errorMessage = "Errore durante l'upload";
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.error || errorMessage;
-          } catch (e) {
-            errorMessage = `Errore del server (Status ${response.status}): ${response.statusText}`;
-          }
-          throw new Error(errorMessage);
+        // Upload directly from browser to Supabase Storage
+        const { data, error } = await supabase.storage
+          .from("articles")
+          .upload(uniqueFilename, file, {
+            contentType: file.type || "image/jpeg",
+            cacheControl: "3600",
+            upsert: false
+          });
+
+        if (error) {
+          throw error;
         }
 
-        const data = await response.json();
+        // Retrieve the public URL for the uploaded file
+        const { data: publicUrlData } = supabase.storage
+          .from("articles")
+          .getPublicUrl(uniqueFilename);
         
         setFormValues(prev => ({
           ...prev,
-          image: data.url
+          image: publicUrlData.publicUrl
         }));
         showToast("Immagine caricata con successo!", "success");
       } catch (err: any) {
