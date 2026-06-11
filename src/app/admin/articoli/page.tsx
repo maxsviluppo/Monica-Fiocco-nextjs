@@ -249,7 +249,14 @@ export default function AdminArticlesPage() {
         });
 
         if (!response.ok) {
-          throw new Error("Errore durante l'upload");
+          let errorMessage = "Errore durante l'upload";
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } catch (e) {
+            errorMessage = `Errore del server (Status ${response.status}): ${response.statusText}`;
+          }
+          throw new Error(errorMessage);
         }
 
         const data = await response.json();
@@ -282,9 +289,9 @@ export default function AdminArticlesPage() {
       setCustomCategories([...customCategories, trimmed]);
       setNewCategoryName("");
       showToast("Categoria aggiunta", "success");
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error adding category:", e);
-      showToast("Errore durante il salvataggio della categoria", "info");
+      showToast(`Errore salvataggio: ${e.message || 'Verifica configurazione / riavvia dev server'}`, "info");
     }
   };
 
