@@ -15,7 +15,7 @@ const milestones = [
   {
     title: "L'approccio umanistico",
     text:
-      "Intorno alla meta degli anni Novanta ho sentito il bisogno di una ricerca piu profonda. L'incontro con l'approccio umanistico di Carl Rogers ha orientato la mia professione verso la relazione d'aiuto, la comunicazione empatica e il counseling.",
+      "Intorno alla metà degli anni Novanta ho sentito il bisogno di una ricerca più profonda. L'incontro con l'approccio umanistico di Carl Rogers ha orientato la mia professione verso la relazione d'aiuto, la comunicazione empatica e il counseling.",
     icon: Heart,
   },
   {
@@ -103,13 +103,13 @@ export default function ChiSonoPage() {
                 Il mio lavoro
               </span>
               <h2 className="font-outfit text-3xl sm:text-4xl font-extrabold text-glicine-900 leading-tight">
-                Ritrovare il proprio posto, il proprio ritmo, la propria verita
+                Ritrovare il proprio posto, il proprio ritmo, la propria verità
               </h2>
             </div>
 
             <div className="space-y-6 text-slate-600 leading-relaxed font-light">
               <p>
-                Il mio lavoro nasce dall'ascolto profondo e dall'incontro tra educazione, emozioni e sistemi relazionali. Integro strumenti psicopedagogici, counseling e costellazioni familiari per aiutare ogni individuo a ritrovare il proprio posto e una relazione piu autentica con se stesso e con gli altri.
+                Il mio lavoro nasce dall'ascolto profondo e dall'incontro tra educazione, emozioni e sistemi relazionali. Integro strumenti psicopedagogici, counseling e costellazioni familiari per aiutare ogni individuo a ritrovare il proprio posto e una relazione più autentica con se stesso e con gli altri.
               </p>
               <p>
                 Offro percorsi individuali, formazione e consulenze educative orientate al benessere emotivo, alla crescita personale e all'armonia delle relazioni.
@@ -131,7 +131,7 @@ export default function ChiSonoPage() {
               <BookOpen className="w-7 h-7 text-glicine-300" />
               <h3 className="font-outfit text-2xl font-extrabold">Una ricerca viva</h3>
               <p className="text-glicine-100 leading-relaxed font-light">
-                La mia formazione non e stata una linea retta, ma un cammino di domande, intuizioni, incontri e passaggi decisivi. Ogni metodo che utilizzo nasce dall'esperienza e da una ricerca di senso concreta.
+                La mia formazione non è stata una linea retta, ma un cammino di domande, intuizioni, incontri e passaggi decisivi. Ogni metodo che utilizzo nasce dall'esperienza e da una ricerca di senso concreta.
               </p>
             </div>
             <div className="bg-white border border-glicine-100 rounded-[2rem] p-8 shadow-sm space-y-4">
@@ -188,7 +188,7 @@ export default function ChiSonoPage() {
         <div className="max-w-4xl mx-auto px-6 space-y-10">
           <div className="rounded-[2rem] border border-glicine-100 bg-glicine-50/50 p-8 sm:p-10">
             <p className="font-outfit text-2xl sm:text-3xl font-light italic leading-relaxed text-glicine-950">
-              "Mi si spalancavano le porte dello conoscibile umano, inteso non piu come territorio frammentato, ma come campo unitario e coerente."
+              "Mi si spalancavano le porte dello conoscibile umano, inteso non più come territorio frammentato, ma come campo unitario e coerente."
             </p>
           </div>
 
@@ -197,7 +197,7 @@ export default function ChiSonoPage() {
               Negli ultimi anni questo interesse si e ulteriormente approfondito grazie alla lunga esperienza maturata sul campo come docente nella formazione psicopedagogica e relazionale rivolta alle figure professionali che operano nell'ambito delle diverse abilita.
             </p>
             <p>
-              L'impegno in progetti dedicati al miglioramento della relazione e della comunicazione mi ha permesso di affinare uno sguardo sempre piu attento alla persona, oltre la diagnosi e oltre i modelli standardizzati.
+              L'impegno in progetti dedicati al miglioramento della relazione e della comunicazione mi ha permesso di affinare uno sguardo sempre più attento alla persona, oltre la diagnosi e oltre i modelli standardizzati.
             </p>
             <p>
               In questa fase della mia vita, il mio cammino di studio e di ricerca si concentra su due traiettorie fondamentali: la pedagogia transgenerazionale, come chiave di lettura delle eredita invisibili che attraversano le storie familiari, e l'accompagnamento consapevole alla relazione, intesa come spazio sacro di trasformazione, cura e possibilita.
