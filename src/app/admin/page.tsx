@@ -227,8 +227,8 @@ export default function AdminDashboardHome() {
           {[
             { name: "Sitemap XML", path: "/sitemap.xml", desc: "Mappa del sito per crawler", status: "Next.js Default", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
             { name: "Robots TXT", path: "/robots.txt", desc: "Direttive crawler motori di ricerca", status: "Configurato", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
-            { name: "Google Analytics", path: "#", desc: "Codice di tracciamento GA4", status: "In Attesa / Da Configurare", color: "bg-amber-500/10 text-amber-500 border-amber-500/20" },
-            { name: "Google Search Console", path: "#", desc: "Verifica proprietà dominio", status: "In Attesa / Da Configurare", color: "bg-amber-500/10 text-amber-500 border-amber-500/20" }
+            { name: "Google Analytics", path: "#", desc: "Codice di tracciamento GA4", status: "Configurato (G-QSDWEL3LY8)", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
+            { name: "Google Search Console", path: "#", desc: "Verifica proprietà dominio", status: "Configurato (Tag Inserito)", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" }
           ].map((item, idx) => (
             <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-glicine-950/40 border border-glicine-900 text-sm">
               <div>
