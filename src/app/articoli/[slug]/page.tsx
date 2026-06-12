@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock, Heart } from "lucide-react";
+import { ArrowLeft, Clock, Heart, MessageCircle, Link2, Check } from "lucide-react";
 import { articles } from "@/data/articles";
 import { supabase } from "@/data/supabase";
 
@@ -12,6 +12,22 @@ export default function ArticoloPage() {
   const slug = params?.slug as string;
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [shareUrl, setShareUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setShareUrl(window.location.href);
+    }
+  }, []);
+
+  const handleCopyLink = () => {
+    if (shareUrl) {
+      navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -146,6 +162,58 @@ export default function ArticoloPage() {
             </p>
           )}
         </div>
+
+        {/* Sharing Widget */}
+        <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div className="space-y-1">
+            <h4 className="font-outfit font-bold text-glicine-950 text-lg">Ti è piaciuto questo articolo?</h4>
+            <p className="text-slate-500 text-sm font-light">Condividilo con i tuoi contatti o sui tuoi canali social.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Facebook Share Button */}
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-glicine-50 hover:bg-glicine-100 text-glicine-900 text-sm font-semibold transition-all duration-300 border border-glicine-200/50 hover:shadow-sm hover:scale-[1.01]"
+            >
+              <svg className="w-4 h-4 fill-current text-glicine-600" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/>
+              </svg>
+              <span>Facebook</span>
+            </a>
+
+            {/* WhatsApp Share Button */}
+            <a
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + " " + shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-glicine-50 hover:bg-glicine-100 text-glicine-900 text-sm font-semibold transition-all duration-300 border border-glicine-200/50 hover:shadow-sm hover:scale-[1.01]"
+            >
+              <MessageCircle className="w-4 h-4 text-glicine-600" />
+              <span>WhatsApp</span>
+            </a>
+
+            {/* Copy Link Button */}
+            <button
+              onClick={handleCopyLink}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-glicine-50 hover:bg-glicine-100 text-glicine-900 text-sm font-semibold transition-all duration-300 border border-glicine-200/50 hover:shadow-sm hover:scale-[1.01]"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-600 animate-bounce" />
+                  <span className="text-emerald-600">Copiato!</span>
+                </>
+              ) : (
+                <>
+                  <Link2 className="w-4 h-4 text-glicine-600" />
+                  <span>Copia Link</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
         <div className="clear-both" />
       </section>
     </article>
