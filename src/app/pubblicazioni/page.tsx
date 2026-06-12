@@ -16,7 +16,8 @@ import {
   ChevronRight,
   X,
   FileText,
-  Download
+  Download,
+  ChevronDown
 } from "lucide-react";
 
 export default function PubblicazioniPage() {
@@ -35,6 +36,7 @@ export default function PubblicazioniPage() {
   const [checkoutStep, setCheckoutStep] = useState<"idle" | "success">("idle");
   const [orderId, setOrderId] = useState("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showFormatModal, setShowFormatModal] = useState(false);
 
   // PDF.js State
   const [pdfDoc, setPdfDoc] = useState<any>(null);
@@ -514,15 +516,18 @@ export default function PubblicazioniPage() {
                   {/* Format Selector */}
                   <div className="space-y-1.5">
                     <label className="text-slate-300 font-semibold uppercase tracking-wider block">Seleziona Formato</label>
-                    <select 
-                      name="format"
-                      value={orderForm.format}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-glicine-400 transition-colors cursor-pointer font-bold text-sm"
+                    <button
+                      type="button"
+                      onClick={() => setShowFormatModal(true)}
+                      className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-left focus:outline-none focus:border-glicine-400 transition-colors cursor-pointer font-bold text-sm flex items-center justify-between"
                     >
-                      <option value="cartaceo">Libro Cartaceo Autografato — €18.00 (+ €3.50 sped.)</option>
-                      <option value="epub">eBook Digitale (Formato EPUB) — €8.00 (Invio immediato)</option>
-                    </select>
+                      <span>
+                        {orderForm.format === "cartaceo" 
+                          ? "Libro Cartaceo Autografato — €18.00 (+ €3.50 sped.)" 
+                          : "eBook Digitale (Formato EPUB) — €8.00 (Invio immediato)"}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                    </button>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -836,6 +841,97 @@ export default function PubblicazioniPage() {
                 </button>
               </div>
 
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Format Selection Modal */}
+      <AnimatePresence>
+        {showFormatModal && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/80 backdrop-blur-sm px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.95 }}
+              className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden shadow-2xl flex flex-col p-6 text-white space-y-6 mb-0 sm:mb-0"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-outfit font-extrabold text-lg text-white">Scegli il Formato</h3>
+                  <p className="text-xs text-slate-400">Seleziona come desideri ricevere il libro</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowFormatModal(false)}
+                  className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Formats list */}
+              <div className="space-y-4">
+                {/* Cartaceo */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOrderForm(prev => ({ ...prev, format: "cartaceo" }));
+                    setShowFormatModal(false);
+                  }}
+                  className={`w-full p-4 rounded-2xl text-left transition-all border flex items-center justify-between cursor-pointer ${
+                    orderForm.format === "cartaceo"
+                      ? "bg-glicine-950/40 border-glicine-400 text-white"
+                      : "bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300"
+                  }`}
+                >
+                  <div className="space-y-1">
+                    <span className="font-bold text-sm block">Libro Cartaceo Autografato</span>
+                    <span className="text-xs text-slate-400 block font-light">Copia fisica spedita a casa con dedica</span>
+                    <span className="text-xs font-semibold text-glicine-300 block">€18.00 <span className="text-slate-500 font-light">(+ €3.50 sped.)</span></span>
+                  </div>
+                  {orderForm.format === "cartaceo" && (
+                    <div className="h-6 w-6 rounded-full bg-glicine-400 text-slate-950 flex items-center justify-center font-bold text-xs">
+                      ✓
+                    </div>
+                  )}
+                </button>
+
+                {/* Ebook */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOrderForm(prev => ({ ...prev, format: "epub" }));
+                    setShowFormatModal(false);
+                  }}
+                  className={`w-full p-4 rounded-2xl text-left transition-all border flex items-center justify-between cursor-pointer ${
+                    orderForm.format === "epub"
+                      ? "bg-glicine-950/40 border-glicine-400 text-white"
+                      : "bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300"
+                  }`}
+                >
+                  <div className="space-y-1">
+                    <span className="font-bold text-sm block">eBook Digitale (EPUB)</span>
+                    <span className="text-xs text-slate-400 block font-light">Download immediato sul tuo dispositivo</span>
+                    <span className="text-xs font-semibold text-glicine-300 block">€8.00 <span className="text-slate-500 font-light">(consegna via email)</span></span>
+                  </div>
+                  {orderForm.format === "epub" && (
+                    <div className="h-6 w-6 rounded-full bg-glicine-400 text-slate-950 flex items-center justify-center font-bold text-xs">
+                      ✓
+                    </div>
+                  )}
+                </button>
+              </div>
+
+              {/* Confirm */}
+              <button
+                type="button"
+                onClick={() => setShowFormatModal(false)}
+                className="w-full py-3.5 rounded-full bg-glicine-800 hover:bg-glicine-750 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer border border-glicine-700/60"
+              >
+                Conferma
+              </button>
             </motion.div>
           </div>
         )}

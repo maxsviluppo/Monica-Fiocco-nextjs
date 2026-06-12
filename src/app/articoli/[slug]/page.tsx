@@ -21,11 +21,22 @@ export default function ArticoloPage() {
     }
   }, []);
 
+  const [instagramCopied, setInstagramCopied] = useState(false);
+
   const handleCopyLink = () => {
     if (shareUrl) {
       navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleInstagramShare = () => {
+    if (shareUrl) {
+      navigator.clipboard.writeText(shareUrl);
+      setInstagramCopied(true);
+      setTimeout(() => setInstagramCopied(false), 3000);
+      window.open("https://www.instagram.com/", "_blank");
     }
   };
 
@@ -193,6 +204,28 @@ export default function ArticoloPage() {
               <MessageCircle className="w-4 h-4 text-glicine-600" />
               <span>WhatsApp</span>
             </a>
+
+            {/* Instagram Share Helper Button */}
+            <button
+              onClick={handleInstagramShare}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-glicine-50 hover:bg-glicine-100 text-glicine-900 text-sm font-semibold transition-all duration-300 border border-glicine-200/50 hover:shadow-sm hover:scale-[1.01]"
+            >
+              {instagramCopied ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-600 animate-bounce" />
+                  <span className="text-emerald-600">Link copiato! Apri Instagram...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 fill-none stroke-current stroke-2 text-glicine-600" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                  </svg>
+                  <span>Instagram</span>
+                </>
+              )}
+            </button>
 
             {/* Copy Link Button */}
             <button
