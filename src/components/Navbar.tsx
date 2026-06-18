@@ -59,7 +59,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-glicine-100 shadow-sm py-4"
+          ? "bg-glicine-950 border-b border-glicine-800/70 shadow-md py-4"
           : "bg-transparent py-6"
       }`}
     >
@@ -68,9 +68,7 @@ export default function Navbar() {
           <img
             src="/logo.png"
             alt="Monica Fiocco Logo"
-            className={`h-[62px] w-auto object-contain transition-all duration-300 ${
-              scrolled ? "" : "brightness-0 invert"
-            }`}
+            className={`h-[62px] w-auto object-contain transition-all duration-300 brightness-0 invert`}
           />
         </Link>
 
@@ -87,22 +85,14 @@ export default function Navbar() {
               {link.submenu ? (
                 <button
                   onClick={() => setDropdownOpen(dropdownOpen === link.name ? null : link.name)}
-                  className={`flex items-center gap-1 text-sm font-medium transition-colors uppercase tracking-wider text-[11px] duration-300 ${
-                    scrolled
-                      ? "text-slate-700 hover:text-glicine-700"
-                      : "text-white/95 hover:text-glicine-300"
-                  }`}
+                  className={`flex items-center gap-1 text-sm font-medium transition-colors uppercase tracking-wider text-[11px] duration-300 text-white/95 hover:text-glicine-300`}
                 >
                   {link.name} <ChevronDown className="w-3.5 h-3.5" />
                 </button>
               ) : (
                 <Link
                   href={link.href}
-                  className={`text-sm font-medium transition-colors uppercase tracking-wider text-[11px] duration-300 ${
-                    scrolled
-                      ? "text-slate-700 hover:text-glicine-700"
-                      : "text-white/95 hover:text-glicine-300"
-                  }`}
+                  className={`text-sm font-medium transition-colors uppercase tracking-wider text-[11px] duration-300 text-white/95 hover:text-glicine-300`}
                 >
                   {link.name}
                 </Link>
@@ -138,9 +128,7 @@ export default function Navbar() {
         {/* Mobile Toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`md:hidden p-2 transition-colors duration-300 ${
-            scrolled ? "text-slate-700 hover:text-glicine-700" : "text-white hover:text-glicine-300"
-          }`}
+          className="md:hidden p-2 transition-colors duration-300 text-white/95 hover:text-glicine-300"
           aria-label="Toggle Menu"
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
